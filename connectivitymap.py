@@ -3,20 +3,32 @@ f2 = open('epo.itp', 'r')
 itpList = f2.read().splitlines()
 pdbList = f1.read().splitlines()
 HETATMList = []
+#atom number
 numberList = []
+#atom name
 nameList = []
+#x coordinates
 x_coordList = []
-y_coordList = []
-z_coordList = []
 X_coordList = []
-Y_coordList = []
+#y coordinates
+y_coordList = []
+Y_coordlist = []
+#z coordinates
+z_coordList = []
 Z_coordList = []
+#atom type
 atypeList = []
+#atom mass
 massList = []
+#atom charge
 chargeList = []
+#interatomic distance
 adistance = []
 Adistance = []
+#interatomic distances < 1.7
 bdistance = []
+#zip list of interacting atoms
+Pairs = []
 for line in pdbList:
     if line.startswith("HETATM"):
        print ("yes") 
@@ -77,11 +89,12 @@ print (distance)
 print ("Test Distance")
 '''
 
-for i in range (0, 29, 1):
-  Xcoord = X_coordList[i]
-  Ycoord = Y_coordList[i]
-  Zcoord = Z_coordList[i]
-  #print (i)
+for a in range (0, 29, 1):
+  Xcoord = X_coordList[a]
+  Ycoord = Y_coordList[a]
+  Zcoord = Z_coordList[a]
+  #print (a)
+  a1 = a
   for i in range (0, 29, 1):
     xcoord = X_coordList[i]
     ycoord = Y_coordList[i]
@@ -92,11 +105,13 @@ for i in range (0, 29, 1):
     distsq = pow(dx, 2) + pow(dy, 2) + pow(dz, 2)
     distance = sqrt(distsq)
     adistance.append(distance)
-    #print (i, distance)
-Adistance = [float(i) for i in adistance]
-for i in Adistance:
-  if i < 1.5:
-    bdistance.append(i)
+    a2 = i
+    print (a1, a2)
+        #print (i, distance)
+Adistance = [float(z) for z in adistance]
+for d in Adistance:
+  if d < 1.5:
+    bdistance.append(d)
   else:
     print ("nonbonded")
 print (bdistance)
