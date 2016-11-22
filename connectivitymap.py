@@ -27,11 +27,13 @@ adistance = []
 Adistance = []
 #interatomic distances < 1.7
 bdistance = []
-#zip list of interacting atoms
-Pairs = []
+#list of pairs atom1
 A1 = []
+#list of pairs atom2
 A2 = []
+#list of bonded pairs atom1
 bA1 = []
+#list of bonded pairs atom2
 bA2 = []
 for line in pdbList:
     if line.startswith("HETATM"):
@@ -116,8 +118,8 @@ for a in range (0, 29, 1):
 Adistance = [float(z) for z in adistance]
 for d in range (len(Adistance)):
     dist = Adistance[d]
-    atom1 = A1[d]
-    atom2 = A2[d]
+    atom1 = int(A1[d])
+    atom2 = int(A2[d])
     if dist < 1.5:
         bdistance.append(dist)
         bA1.append(atom1)
@@ -126,6 +128,6 @@ for d in range (len(Adistance)):
         print ("nonbonded")
 print (bdistance)
 print ("\n")
-print (bA1[0], bA2[0])
+#print (bA1[1], bA2[1])
 # bdistance contains lengths of all "bonds"
 print ("final")
