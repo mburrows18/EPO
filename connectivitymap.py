@@ -29,47 +29,50 @@ Adistance = []
 bdistance = []
 #zip list of interacting atoms
 Pairs = []
+A1 = []
+A2 = []
+bA1 = []
+bA2 = []
 for line in pdbList:
     if line.startswith("HETATM"):
-       print ("yes") 
-       list(line)
-       HETATM = line[0:6]
-       HETATMList.append(HETATM)
-       HETATMList = [x.strip(' ') for x in HETATMList]
-       number = line[9:11]
-       numberList.append(number)
-       numberList = [x.strip(' ') for x in numberList]
-       name = line[12:16]
-       nameList.append(name)
-       nameList = [x.strip(' ') for x in nameList]
-       x_coord = line[30:38]
-       x_coordList.append(x_coord)
-       x_coordList = [x.strip(' ') for x in x_coordList]
-       X_coordList = [float(i) for i in x_coordList]
-       y_coord = line[39:47]
-       y_coordList.append(y_coord)
-       y_coordList = [x.strip(' ') for x in y_coordList]
-       Y_coordList = [float(i) for i in y_coordList]
-       z_coord = line[48:55]
-       z_coordList.append(z_coord)
-       z_coordList = [x.strip(' ') for x in z_coordList]
-       Z_coordList = [float(i) for i in z_coordList]
+        print ("yes") 
+        list(line)
+        HETATM = line[0:6]
+        HETATMList.append(HETATM)
+        HETATMList = [x.strip(' ') for x in HETATMList]
+        number = line[9:11]
+        numberList.append(number)
+        numberList = [x.strip(' ') for x in numberList]
+        name = line[12:16]
+        nameList.append(name)
+        nameList = [x.strip(' ') for x in nameList]
+        x_coord = line[30:38]
+        x_coordList.append(x_coord)
+        x_coordList = [x.strip(' ') for x in x_coordList]
+        X_coordList = [float(i) for i in x_coordList]
+        y_coord = line[39:47]
+        y_coordList.append(y_coord)
+        y_coordList = [x.strip(' ') for x in y_coordList]
+        Y_coordList = [float(i) for i in y_coordList]
+        z_coord = line[48:55]
+        z_coordList.append(z_coord)
+        z_coordList = [x.strip(' ') for x in z_coordList]
+        Z_coordList = [float(i) for i in z_coordList]
     else:
-   	   print ("none")
+        print ("none")
 print ("\n data from pdb file has been imported \n")
-
 for line in itpList:
-	if line.startswith(" "):
-		print ("yes")
-		list(line)
-		atype = line[11:20]
-		atypeList.append(atype)
-		atypeList = [x.strip(' ') for x in atypeList]
-		mass = line[59:68]
-		massList.append(mass)
-		massList = [x.strip(' ') for x in massList]
-	else:
-		print ("none")
+    if line.startswith(" "):
+        print ("yes")
+        list(line)
+        atype = line[11:20]
+        atypeList.append(atype)
+        atypeList = [x.strip(' ') for x in atypeList]
+        mass = line[59:68]
+        massList.append(mass)
+        massList = [x.strip(' ') for x in massList]
+    else:
+        print ("none")
 print ("\n data from itp file has been imported \n")
 print ("done")
 
@@ -90,30 +93,39 @@ print ("Test Distance")
 '''
 
 for a in range (0, 29, 1):
-  Xcoord = X_coordList[a]
-  Ycoord = Y_coordList[a]
-  Zcoord = Z_coordList[a]
+    Xcoord = X_coordList[a]
+    Ycoord = Y_coordList[a]
+    Zcoord = Z_coordList[a]
   #print (a)
-  a1 = a
-  for i in range (0, 29, 1):
-    xcoord = X_coordList[i]
-    ycoord = Y_coordList[i]
-    zcoord = Z_coordList[i]
-    dx = (xcoord - Xcoord)
-    dy = (ycoord - Ycoord)
-    dz = (zcoord - Zcoord)
-    distsq = pow(dx, 2) + pow(dy, 2) + pow(dz, 2)
-    distance = sqrt(distsq)
-    adistance.append(distance)
-    a2 = i
-    print (a1, a2)
+    a1 = a
+    for i in range (0, 29, 1):
+        xcoord = X_coordList[i]
+        ycoord = Y_coordList[i]
+        zcoord = Z_coordList[i]
+        dx = (xcoord - Xcoord)
+        dy = (ycoord - Ycoord)
+        dz = (zcoord - Zcoord)
+        distsq = pow(dx, 2) + pow(dy, 2) + pow(dz, 2)
+        distance = sqrt(distsq)
+        adistance.append(distance)
+        a2 = i
+        print (a1, a2)
+        A1.append(a)
+        A2.append(i)
         #print (i, distance)
 Adistance = [float(z) for z in adistance]
-for d in Adistance:
-  if d < 1.5:
-    bdistance.append(d)
-  else:
-    print ("nonbonded")
+for d in range (len(Adistance)):
+    dist = Adistance[d]
+    atom1 = A1[d]
+    atom2 = A2[d]
+    if dist < 1.5:
+        bdistance.append(dist)
+        bA1.append(atom1)
+        bA2.append(atom2)
+    else:
+        print ("nonbonded")
 print (bdistance)
+print ("\n")
+print (bA1[0], bA2[0])
 # bdistance contains lengths of all "bonds"
 print ("final")
