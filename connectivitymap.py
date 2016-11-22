@@ -16,7 +16,6 @@ for line in pdbList:
     if line.startswith("HETATM"):
         words = line.split()                  # contains one line in the list format
         coordinates.append((words[1], (float(words[5]), float(words[6]), float(words[7]))))
-#        print(coordinates)
 
 for i in range(len(coordinates)):
     atom_coord_x, atom_coord_y, atom_coord_z = coordinates[i][1][0], coordinates[i][1][1], coordinates[i][1][2]
@@ -29,6 +28,4 @@ for i in range(len(coordinates)):
         if (distance < dist_thresh) and (i != j):
             connectivity[i][1].append(j + 1)
 
-print(connectivity)
-            
             
