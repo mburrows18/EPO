@@ -14,7 +14,9 @@ Z_coordList = []
 atypeList = []
 massList = []
 chargeList = []
-
+adistance = []
+Adistance = []
+bdistance = []
 for line in pdbList:
     if line.startswith("HETATM"):
        print ("yes") 
@@ -59,19 +61,44 @@ for line in itpList:
 print ("\n data from itp file has been imported \n")
 print ("done")
 
+
 import math
 import numpy as np
-
-
 from math import sqrt
-for i in X_coordList:
-	for j in Y_coordList:
-		for k in Z_coordList:
-			dx = X_coordList[0] - i
-			dy = Y_coordList[0] - j
-			dz = Z_coordList[0] - k
-			distsq = pow(dx, 2) + pow(dy, 2) + pow(dz, 2)
-			distance = sqrt(distsq)
-			print (distance)
 
+
+'''dx = (X_coordList[0] - X_coordList[1])
+dy = (Y_coordList[0] - Y_coordList[1])
+dz = (Z_coordList[0] - Z_coordList[1])
+distsq = pow(dx, 2) + pow(dy, 2) + pow(dz, 2)
+distance = sqrt(distsq)
+print (distance)
+
+print ("Test Distance")
+'''
+
+for i in range (0, 29, 1):
+  Xcoord = X_coordList[i]
+  Ycoord = Y_coordList[i]
+  Zcoord = Z_coordList[i]
+  #print (i)
+  for i in range (0, 29, 1):
+    xcoord = X_coordList[i]
+    ycoord = Y_coordList[i]
+    zcoord = Z_coordList[i]
+    dx = (xcoord - Xcoord)
+    dy = (ycoord - Ycoord)
+    dz = (zcoord - Zcoord)
+    distsq = pow(dx, 2) + pow(dy, 2) + pow(dz, 2)
+    distance = sqrt(distsq)
+    adistance.append(distance)
+    #print (i, distance)
+Adistance = [float(i) for i in adistance]
+for i in Adistance:
+  if i < 1.5:
+    bdistance.append(i)
+  else:
+    print ("nonbonded")
+print (bdistance)
+# bdistance contains lengths of all "bonds"
 print ("final")
