@@ -20,10 +20,15 @@ for line in pdbList:
 
 for i in range(len(coordinates)):
     atom_coord_x, atom_coord_y, atom_coord_z = coordinates[i][1][0], coordinates[i][1][1], coordinates[i][1][2]
-    for j in range(i, len(coordinates)):
+    connectivity.append([i + 1, []])
+    for j in range(len(coordinates)):
         target_coord_x, target_coord_y, target_coord_z = coordinates[j][1][0], coordinates[j][1][1], coordinates[j][1][2]
         distance = sqrt(power((target_coord_x - atom_coord_x), 2) + 
             power((target_coord_y - atom_coord_y), 2) + 
             power((target_coord_z - atom_coord_z), 2))
-        if distance < dist_thresh:
-            connectivity.append((i, j))
+        if (distance < dist_thresh) and (i != j):
+            connectivity[i][1].append(j + 1)
+
+print(connectivity)
+            
+            
