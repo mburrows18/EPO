@@ -8,6 +8,8 @@ f3 = open('connectivity.txt', 'w')
 itpList = f2.read().splitlines()
 pdbList = f1.read().splitlines()
 
+
+
 #coordinates
 coordinates = []
 #connectivity by atom name
@@ -45,6 +47,8 @@ angleidnames = []
 #angles in degrees
 anglevalues = []
 index = -1
+#uniqe bond in the form [atom1, atom2]
+uniquebonds = []
 
 for line in itpList:
     if line.startswith(" "):
@@ -66,6 +70,8 @@ for i in range(len(coordinates)):
         distance = sqrt(power((target_coord_x - atom_coord_x), 2) + 
             power((target_coord_y - atom_coord_y), 2) + 
             power((target_coord_z - atom_coord_z), 2))
+        if (distance < dist_thresh) and (i != j) and (i < j):
+            uniquebonds.append([aname[i], aname[j]])
         if (distance < dist_thresh) and (i != j):
             connectivity[i][1].append(aname[j])
             connectivitymap[i][1].append(j + 1)
@@ -242,3 +248,5 @@ f5.close()
 f5 = open('connectivity.txt', 'a')
 for i in range (len(angleidnumbers)):
     print (angleidnumbers[i], angleidnames[i], anglevalues[i], file = f5)
+for i in range (len(uniquebonds)):
+    print (uniquebonds[i], file = f5)
