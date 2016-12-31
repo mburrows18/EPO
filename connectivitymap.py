@@ -20,6 +20,8 @@ connectivitymap = []
 dist_thresh = 1.7
 #atom type
 atype = []
+#atomtypeList in the form [atom name, atom type]
+atomtypeList = []
 #atom name
 aname = []
 #bond lengths
@@ -49,6 +51,8 @@ anglevalues = []
 index = -1
 #uniqe bond in the form [atom1, atom2]
 uniquebonds = []
+#bonds in the form [atom type 1, atom type 2]
+bondtype = []
 
 for line in itpList:
     if line.startswith(" "):
@@ -75,10 +79,15 @@ for i in range(len(coordinates)):
         if (distance < dist_thresh) and (i != j):
             connectivity[i][1].append(aname[j])
             connectivitymap[i][1].append(j + 1)
-            bdist[i][1].append(j + 1)
+            bdist[i][1].append(aname[j])
             bdist[i][2].append(str(distance))
-#print ("\n", file = f3)
+#up to here in new script 12/31/16 6:45am
 print ("Bonding in EPO:", file = f3)
+for i in range (len(uniquebonds)):
+    Aname1 = uniquebonds[i][0]
+    Aname2 = uniquebonds[i][1]
+for i in range (len(atomcoords)):
+    print (atomcoords[i], file = f3)
 for i in range (len(connectivity)):
     #if len(connectivity[i][1]) == 1:
         #print ('{} is bonded to:'.format(aname[i]), file = f3)
@@ -107,8 +116,9 @@ for i in range (len(connectivity)):
             #bondcoords[i][0] generates atom name with coordinates bondcoords[i][0][1]
             #bondcoords[i][1] generates [atom name, [coordinates]] of all bonded atoms
             bonds[i][1].append(connectivity[i][1][j])
-   
+#up to here in new script 12/31/16 7:57am
 for i in range (len(bonds)):
+    print (bonds[i], file = f3)
     print ('atom {} makes {} bonds \n    and is bonded to {}'.format(aname[i], len(connectivity[i][1]), ', '.join(bonds[i][1])), file = f3)   
     #print ('{} is bonded to {}'.format(bonds[i][0], ', '.join(bonds[i][1])), file = f3)
 for i in range (len(bondcoords)):
@@ -229,6 +239,8 @@ for i in range (len(bondcoords)):
 for i in range (len(bondangle)):
     #print('angle number {}, {}, with bond angle = {} degrees'.format(numberedangles[i][0], '-'.join(bondangle[i][0]), ', '.join(bondangle[i][1])), file = f3)
     print ('# {}  {}  {}'.format(numberedangles[i][0], '-'.join(bondangle[i][0]), ''.join(bondangle[i][1])), file = f3)
+for i in range (len(aname)):
+    atomtypeList.append([aname[i], atype[i]])
 f3.close()
 f4 = open('connectivity.txt', 'r')
 connectivityList = f4.read().splitlines()
@@ -243,10 +255,45 @@ f5 = open('connectivity.txt', 'w')
 for line in connectivityList:
     if not line.startswith("#"):
         print(line, file = f5)
-        index +=1
 f5.close()
 f5 = open('connectivity.txt', 'a')
 for i in range (len(angleidnumbers)):
     print (angleidnumbers[i], angleidnames[i], anglevalues[i], file = f5)
+print ("unique bonds", file = f5)
 for i in range (len(uniquebonds)):
-    print (uniquebonds[i], file = f5)
+    print (i+1,uniquebonds[i], file = f5)
+print ("atom types", file = f5)
+for i in range (len(atomtypeList)):
+    print(atomtypeList[i], file = f5)
+for i in range (len(bondlengths)):
+    print(i+1, bondlengths[i], file = f5)
+'''f6 = open('EPO.prm', 'w')
+print ("\n", file = f6)
+print ("[ bondtypes ]\n;     i        j    func        b0        kb", file = f6)
+for i in range (len(uniquebonds)):
+    Aname1 = uniquebonds[i][0]
+    if Aname1.startswith("C"):
+        Aindex1 = (int(Aname1.strip('C')) - 1)
+    if Aname1.startswith("H"):
+        Aindex1 = (int(Aname1.strip('H')) - 1)
+    if Aname1.startswith("N"):
+        Aindex1 = (int(Aname1.strip('N')) - 1)
+    if Aname1.startswith("O"):
+        Aindex1 = (int(Aname1.strip('O')) - 1)
+    bondtype.append([atype[Aindex1], []])
+for i in range (len(uniquebonds)):
+    Aname2 = uniquebonds[i][1]
+    if Aname2.startswith("C"):
+        Aindex2 = (int(Aname2.strip('C')) - 1)
+    if Aname2.startswith("H"):
+        Aindex2 = (int(Aname2.strip('H')) - 1)
+    if Aname2.startswith("N"):
+        Aindex2 = (int(Aname2.strip('N')) - 1)
+    if Aname2.startswith("O"):
+        Aindex2 = (int(Aname2.strip('O')) - 1)
+    bondtype[i][1].append(atype[Aindex2])
+for i in range (len(bondtype)):
+    print (bondtype[i], file = f5)
+for i in range (len(bondtype)):
+    print ("    {}      {}    1    {}".format(str(bondtype[i][0]), str(bondtype[i][1][0]), bondlengths), file = f6)
+'''
