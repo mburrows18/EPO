@@ -239,6 +239,7 @@ for i in range (len(bondcoords)):
 for i in range (len(bondangle)):
     #print('angle number {}, {}, with bond angle = {} degrees'.format(numberedangles[i][0], '-'.join(bondangle[i][0]), ', '.join(bondangle[i][1])), file = f3)
     print ('# {}  {}  {}'.format(numberedangles[i][0], '-'.join(bondangle[i][0]), ''.join(bondangle[i][1])), file = f3)
+#up to here in new script 12/31/16 1:06pm
 for i in range (len(aname)):
     atomtypeList.append([aname[i], atype[i]])
 f3.close()
