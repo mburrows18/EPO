@@ -25,6 +25,8 @@ atomcoords = []
 #atom coordinates in the form [atom name, [x, y, z]]
 connectivity = []
 #bonded atoms by atom name in the form [atom1, [bonded atoms]]
+uniqueconnectivity = []
+#bonded atoms without permutative duplicates by atom name in the form [atom1, [bonded atoms]]
 #in v1 of script this was also known as "bonds"
 dist_thresh = 1.7
 #distance threshold min bond length
@@ -34,6 +36,8 @@ atype = []
 #atom type starting from atom type for C1 with index 0
 bdist = []
 #bond lengths in the form [atom1, [bonded atoms], [bond lenghts]]
+uniquebdist = []
+#bond lengths without permutative duplicates in the form [atom1, [bonded atoms], [bond lenghts]]
 bondcoords = []
 '''bond coordinates in the form 
 		[[atom, coordinates], [[bonded atom, coordinates], etc]]
@@ -56,6 +60,8 @@ anglevalues = []
 #extracted from connectivity.txt
 uniquebonds = []
 #unique bonds in the form [atom1, atom2]. index = bond number - 1
+uniquebondlengths = []
+#unique bond lengths without permutative duplicates in the form [atom1, atom2, bond length]
 bondtype = []
 #unique bonds in the form [atom1 type, atom2 type]. index = index from unique bond list
 Aindex = 0
@@ -116,7 +122,9 @@ extracts data from:
 generates: 
   coordinates[]
   connectivity[]
+	uniqueconnectivity[]
   bdist[]
+	uniquebdist[]
   uniquebonds[]
   atype[]
   aname[]
@@ -137,7 +145,9 @@ for i in range(len(coordinates)):
   atom_coord_y = coordinates[i][1][1]
   atom_coord_z = coordinates[i][1][2]
   connectivity.append([aname[i], []])
+  uniqueconnectivity.append([aname[i], []])
   bdist.append([aname[i], [], []])
+  uniquebdist.append([aname[i], [], []])
   atomcoords.append((aname[i], 
     (atom_coord_x, atom_coord_y, atom_coord_z)))
   for j in range(len(coordinates)):
@@ -150,6 +160,9 @@ for i in range(len(coordinates)):
       power((target_coord_z - atom_coord_z), 2))
     if (distance < dist_thresh) and (i != j) and (i < j):
       uniquebonds.append([aname[i], aname[j]])
+      uniqueconnectivity[i][1].append(aname[j])
+      uniquebdist[i][1].append(aname[j])
+      uniquebdist[i][2].append(str(distance))
     if (distance < dist_thresh) and (i != j):
       connectivity[i][1].append(aname[j])
       bdist[i][1].append(aname[j])
@@ -162,6 +175,7 @@ uses:
 generates:
   bondcoords[]
   bondlengths[]
+	uniquebondlengths[]
 '''''''''''''''''''''
 for i in range(len(connectivity)):
   if len(connectivity[i][1]) != 0:
@@ -171,6 +185,13 @@ for i in range(len(connectivity)):
       Aindex = aindex(Aname)
       bondlengths.append((aname[i], Aname, bdist[i][2][j]))
       bondcoords[i][1].append([connectivity[i][1][j], atomcoords[Aindex][1]])
+for i in range(len(uniqueconnectivity)):
+  if len(uniqueconnectivity[i][1]) != 0:
+    bondcoords.append([[aname[i], atomcoords[i][1]], []])
+    for j in range(len(uniqueconnectivity[i][1])):
+      Aname = uniqueconnectivity[i][1][j]
+      Aindex = aindex(Aname)
+      uniquebondlengths.append((aname[i], Aname, uniquebdist[i][2][j]))
 #///////////////////////////////END SECTION TWO///////////////////////////////
 #///////////////////////////////START SECTION THREE///////////////////////////////
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -235,9 +256,39 @@ for i in range(len(bondcoords)):
       anglenumber, 
       bondcoords, i, 1, 3) 
 for i in range(len(bondangle)):
-    print ('# {}  {}  {}'.format(
+  print ('# {}  {}  {}'.format(
     numberedangles[i][0], 
     '-'.join(bondangle[i][0]), 
     ''.join(bondangle[i][1])), 
     file = f3)
 #////////////////////////////////END SECTION THREE////////////////////////////////
+#////////////////////START SECTION FOUR////////////////////
+print ("unique bonds", file = f3)
+for i in range (len(uniquebonds)):
+  print (i+1,uniquebonds[i], file = f3)
+print ("unique bond lengths", file = f3)
+for i in range(len(uniquebondlengths)):
+	print (i+1,uniquebondlengths[i], file = f3)
+print ("atom types", file = f3)
+for i in range(len(aname)):
+	print ('{} -- {}'.format(aname[i], atype[i]), file = f3)
+f3.close()
+#/////////////////////END SECTION FOUR/////////////////////
+f4 = open('connectivity.txt', 'r')
+connectivityList = f4.read().splitlines()
+for line in connectivityList:
+  if line.startswith("#"):
+    words3 = line.split()
+    angleidnumbers.append(words3[1])
+    angleidnames.append(words3[2])
+    anglevalues.append(words3[3])    
+f4.close()
+f5 = open('connectivity.txt', 'w')
+for line in connectivityList:
+  if not line.startswith("#"):
+    print(line, file = f5)
+f5.close()
+f5 = open('connectivity.txt', 'a')
+print ("angles", file = f5)
+for i in range (len(angleidnumbers)):
+  print (angleidnumbers[i], angleidnames[i], anglevalues[i], file = f5)
