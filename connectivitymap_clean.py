@@ -76,7 +76,7 @@ Aindex = 0
 #Aindex is NOT an ordered list -- intermediate variable used in section 2
 anglenumber = 0
 #anglenumber is NOT an ordered list -- intermediate variable used in section 3
-
+uniquebondlengthsnm = []
 
 def printlist(List):
 #prints all items in list, output file = f3 (connectivity.txt)
@@ -321,22 +321,57 @@ f5.close()
 f5 = open('connectivity.txt', 'a')
 print ("angles", file = f5)
 for i in range (len(angleidnumbers)):
-	print (angleidnumbers[i], angleidnames[i], angleidtypes[i], anglevalues[i], file = f5)
+	print (angleidnumbers[i], 
+		angleidnames[i], 
+		angleidtypes[i], 
+		anglevalues[i], 
+		file = f5)
 f5.close()
 
 
 f6 = open('EPO.prm', 'w')
-print ("\n[ bondtypes ]\n;     i           j   func                    b0                    kb", file = f6)
+print ("\n[ bondtypes ]", file = f6)
+print(";", 
+	str("i").ljust(8),
+	str("j").ljust(8),
+	str("func").ljust(5),
+	str("b0").ljust(18),
+	str("kb").ljust(12),
+	file = f6)
+for i in range(len(uniquebondlengths)):
+	lengthnm = float(uniquebondlengths[i][2])*0.1
+	uniquebondlengthsnm.append([lengthnm])
 for i in range(len(uniquebonds)):
-  print("     {}          {}       1         {}        ".format(
-		uniquebondtypes[i][0], 
-		uniquebondtypes[i][1], 
-		uniquebondlengths[i][2]), 
+	print(" ", 
+		str(uniquebondtypes[i][0]).ljust(8), 
+		str(uniquebondtypes[i][1]).ljust(8), 
+		str("1").ljust(5), 
+		str(uniquebondlengthsnm[i][0]).ljust(18), 
 		file = f6)
 print ("\n\n", file = f6)
-print ("[ angletypes ]\n;     i         j        k    func      theta0       ktheta          ub0          kub", file = f6)
+print ("[ angletypes ]", file = f6)
+print(";", 
+	str("i").ljust(8),
+	str("j").ljust(8),
+	str("k").ljust(8),
+	str("func").ljust(5),
+	str("theta0").ljust(12),
+	str("ktheta").ljust(8),
+	str("ub0").ljust(8),
+	str("kub").ljust(8), 
+	file = f6)
 for i in range(len(angleidtypes)):
 	line = str(angleidtypes[i])
 	angleIDtypes.append(line.split("-"))
 for i in range(len(angleidtypes)):
-	print ("    {}       {}       {}".format(angleIDtypes[i][0], angleIDtypes[i][1], angleIDtypes[i][2]), file = f6)
+	print(" ", 
+		str(angleIDtypes[i][0]).ljust(8), 
+		str(angleIDtypes[i][1]).ljust(8), 
+		str(angleIDtypes[i][2]).ljust(8), 
+		str("5").ljust(5),
+		str(anglevalues[i]).ljust(12), 
+		file = f6)
+
+
+
+
