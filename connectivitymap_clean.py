@@ -101,6 +101,8 @@ def aindex(Aname):
 	return Aindex
 
 
+
+
 def calcangle(bondangle, numberedangles, anglenumber, bondcoords, bondcoordtype, i, a, c):
 #calculates bond angles
 	atomA = np.array(bondcoords[i][1][a][1])
@@ -375,7 +377,6 @@ for i in range(len(uniquebondtypes)):
 		KB.append("258571.20")
 	if uniquebondtypes[i][0] == ("CN7") and uniquebondtypes[i][1] == ("HN7"):
 		KB.append("258571.20")
-
 for i in range(len(uniquebonds)):
 	print(" ", 
 		str(uniquebondtypes[i][0]).ljust(8), 
