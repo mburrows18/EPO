@@ -401,6 +401,42 @@ for i in range(len(angleidtypes)):
 	line = str(angleidtypes[i])
 	angleIDtypes.append(line.split("-"))
 
+
+'''
+CN3/CN3/CN3  
+CN3/CN3/HN3
+CN3/CN3/CN2
+CN3/CN2/CN2
+CN2/CN2/OG3R60
+CN3/CN2/OG3R60
+CN2/CN2/CN3
+CN3/CN2/NN2
+CN2/CN2/NN2
+CN2/CN3/HN3
+CN2/CN3/CN3  711.280000
+CN2/NN2/CN2
+CN2/NN2/CN8
+CN2/OG3R60/CN2
+NN2/CN2/CN2
+NN2/CN2/CN3
+OG3R60/CN2/CN2
+OG3R60/CN2/CN3
+NN2/CN8/CN7
+CN7/CN8/HN8
+NN2/CN8/CN8
+HN8/CN8/HN8
+CN8/CN7/HN7
+HN7/CN7/HN7
+'''
+
+
+
+'''
+for i in range(len(angleIDtypes)):
+	if angleIDtypes[i][0] == ("") and angleIDtypes[i][1] == ("") and angleIDtypes[i][2] == (""):
+		KB.append("")
+'''
+
 for i in range(len(angleidtypes)):
 	print(" ", 
 		str(angleIDtypes[i][0]).ljust(8), 
