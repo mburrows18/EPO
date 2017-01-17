@@ -77,6 +77,7 @@ Aindex = 0
 anglenumber = 0
 #anglenumber is NOT an ordered list -- intermediate variable used in section 3
 uniquebondlengthsnm = []
+KB = []
 
 def printlist(List):
 #prints all items in list, output file = f3 (connectivity.txt)
@@ -335,18 +336,48 @@ print(";",
 	str("i").ljust(8),
 	str("j").ljust(8),
 	str("func").ljust(5),
-	str("b0").ljust(18),
+	str("b0").ljust(25),
 	str("kb").ljust(12),
 	file = f6)
 for i in range(len(uniquebondlengths)):
 	lengthnm = float(uniquebondlengths[i][2])*0.1
 	uniquebondlengthsnm.append([lengthnm])
+typei = 0
+typej = 0
+kb = []
+
+
+
+for i in range(len(uniquebondtypes)):
+	if uniquebondtypes[i][0] == ("CN3"):
+		if uniquebondtypes[i][1] == ("CN3"):
+			KB.append("418400.00")
+		if uniquebondtypes[i][1] == ("HN3"):
+			KB.append("292880.00")
+		if uniquebondtypes[i][1] == ("CN2"):
+			KB.append("267776.00")
+	if uniquebondtypes[i][0] == ("CN2"):
+		if uniquebondtypes[i][1] == ("CN3"):
+			KB.append("418400.00")
+		if uniquebondtypes[i][1] == ("CN2"):
+			KB.append("252713.60")
+		if uniquebondtypes[i][1] == ("NN2"):
+			KB.append("334720.00")
+	if uniquebondtypes[i][0] == ("NN2"):
+		if uniquebondtypes[i][1] == ("CN2"):
+			KB.append("334720.00")
+	else:
+		KB.append(i)
+
+
+
 for i in range(len(uniquebonds)):
 	print(" ", 
 		str(uniquebondtypes[i][0]).ljust(8), 
 		str(uniquebondtypes[i][1]).ljust(8), 
 		str("1").ljust(5), 
-		str(uniquebondlengthsnm[i][0]).ljust(18), 
+		str(uniquebondlengthsnm[i][0]).ljust(25), 
+		str(KB[i]).ljust(12), 
 		file = f6)
 print ("\n\n", file = f6)
 print ("[ angletypes ]", file = f6)
@@ -355,7 +386,7 @@ print(";",
 	str("j").ljust(8),
 	str("k").ljust(8),
 	str("func").ljust(5),
-	str("theta0").ljust(12),
+	str("theta0").ljust(15),
 	str("ktheta").ljust(8),
 	str("ub0").ljust(8),
 	str("kub").ljust(8), 
@@ -363,13 +394,17 @@ print(";",
 for i in range(len(angleidtypes)):
 	line = str(angleidtypes[i])
 	angleIDtypes.append(line.split("-"))
+
 for i in range(len(angleidtypes)):
 	print(" ", 
 		str(angleIDtypes[i][0]).ljust(8), 
 		str(angleIDtypes[i][1]).ljust(8), 
 		str(angleIDtypes[i][2]).ljust(8), 
 		str("5").ljust(5),
-		str(anglevalues[i]).ljust(12), 
+		str(anglevalues[i]).ljust(15), 
+		#str(KTHETA).ljust(8),
+		#str(UB0).ljust(8),
+		#str(KUB).ljust(8), 
 		file = f6)
 
 
