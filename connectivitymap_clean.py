@@ -77,7 +77,9 @@ Aindex = 0
 anglenumber = 0
 #anglenumber is NOT an ordered list -- intermediate variable used in section 3
 uniquebondlengthsnm = []
+#list of unique bond lengths in nanometers
 KB = []
+#list of bond KB values for bond types
 
 def printlist(List):
 #prints all items in list, output file = f3 (connectivity.txt)
@@ -346,30 +348,33 @@ typei = 0
 typej = 0
 kb = []
 
-
-
 for i in range(len(uniquebondtypes)):
-	if uniquebondtypes[i][0] == ("CN3"):
-		if uniquebondtypes[i][1] == ("CN3"):
-			KB.append("418400.00")
-		if uniquebondtypes[i][1] == ("HN3"):
-			KB.append("292880.00")
-		if uniquebondtypes[i][1] == ("CN2"):
-			KB.append("267776.00")
-	if uniquebondtypes[i][0] == ("CN2"):
-		if uniquebondtypes[i][1] == ("CN3"):
-			KB.append("418400.00")
-		if uniquebondtypes[i][1] == ("CN2"):
-			KB.append("252713.60")
-		if uniquebondtypes[i][1] == ("NN2"):
-			KB.append("334720.00")
-	if uniquebondtypes[i][0] == ("NN2"):
-		if uniquebondtypes[i][1] == ("CN2"):
-			KB.append("334720.00")
-	else:
-		KB.append(i)
-
-
+	if uniquebondtypes[i][0] == ("CN3") and uniquebondtypes[i][1] == ("CN3"):
+		KB.append("418400.00")
+	if uniquebondtypes[i][0] == ("CN3") and uniquebondtypes[i][1] == ("HN3"):
+		KB.append("292880.00")
+	if uniquebondtypes[i][0] == ("CN2") and uniquebondtypes[i][1] == ("CN3"):
+		KB.append("267776.00")
+	if uniquebondtypes[i][0] == ("CN3") and uniquebondtypes[i][1] == ("CN2"):
+		KB.append("267776.00")
+	if uniquebondtypes[i][0] == ("CN2") and uniquebondtypes[i][1] == ("CN2"):
+		KB.append("252713.60")
+	if uniquebondtypes[i][0] == ("CN2") and uniquebondtypes[i][1] == ("OG3R60"):
+		KB.append("UNKNOWN")
+	if uniquebondtypes[i][0] == ("CN2") and uniquebondtypes[i][1] == ("NN2"):
+		KB.append("334720.00")
+	if uniquebondtypes[i][0] == ("NN2") and uniquebondtypes[i][1] == ("CN2"):
+		KB.append("334720.00")
+	if uniquebondtypes[i][0] == ("NN2") and uniquebondtypes[i][1] == ("CN8"):
+		KB.append("334720.00")
+	if uniquebondtypes[i][0] == ("OG3R60") and uniquebondtypes[i][1] == ("CN2"):
+		KB.append("UNKNOWN")
+	if uniquebondtypes[i][0] == ("CN8") and uniquebondtypes[i][1] == ("CN7"):
+		KB.append("186188.00")
+	if uniquebondtypes[i][0] == ("CN8") and uniquebondtypes[i][1] == ("HN8"):
+		KB.append("258571.20")
+	if uniquebondtypes[i][0] == ("CN7") and uniquebondtypes[i][1] == ("HN7"):
+		KB.append("258571.20")
 
 for i in range(len(uniquebonds)):
 	print(" ", 
