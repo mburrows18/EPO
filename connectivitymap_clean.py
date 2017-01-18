@@ -80,6 +80,7 @@ uniquebondlengthsnm = []
 #list of unique bond lengths in nanometers
 KB = []
 #list of bond KB values for bond types
+KBA = []
 
 def printlist(List):
 #prints all items in list, output file = f3 (connectivity.txt)
@@ -393,7 +394,7 @@ print(";",
 	str("k").ljust(8),
 	str("func").ljust(5),
 	str("theta0").ljust(15),
-	str("ktheta").ljust(8),
+	str("ktheta").ljust(12),
 	str("ub0").ljust(8),
 	str("kub").ljust(8), 
 	file = f6)
@@ -401,41 +402,57 @@ for i in range(len(angleidtypes)):
 	line = str(angleidtypes[i])
 	angleIDtypes.append(line.split("-"))
 
-
-'''
-CN3/CN3/CN3  
-CN3/CN3/HN3
-CN3/CN3/CN2
-CN3/CN2/CN2
-CN2/CN2/OG3R60
-CN3/CN2/OG3R60
-CN2/CN2/CN3
-CN3/CN2/NN2
-CN2/CN2/NN2
-CN2/CN3/HN3
-CN2/CN3/CN3  711.280000
-CN2/NN2/CN2
-CN2/NN2/CN8
-CN2/OG3R60/CN2
-NN2/CN2/CN2
-NN2/CN2/CN3
-OG3R60/CN2/CN2
-OG3R60/CN2/CN3
-NN2/CN8/CN7
-CN7/CN8/HN8
-NN2/CN8/CN8
-HN8/CN8/HN8
-CN8/CN7/HN7
-HN7/CN7/HN7
-'''
-
-
-
-'''
 for i in range(len(angleIDtypes)):
-	if angleIDtypes[i][0] == ("") and angleIDtypes[i][1] == ("") and angleIDtypes[i][2] == (""):
-		KB.append("")
-'''
+	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN3") and angleIDtypes[i][2] == ("CN3"):
+		KBA.append("334.720000")
+	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN3") and angleIDtypes[i][2] == ("HN3"):
+		KBA.append("317.984000")
+	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN3") and angleIDtypes[i][2] == ("CN2"):
+		KBA.append("711.280000")
+	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("CN2"):
+		KBA.append("502.080000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("OG3R60"):
+		KBA.append("UNKNOWN")
+	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("OG3R60"):
+		KBA.append("UNKNOWN")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("CN3"):
+		KBA.append("502.080000")
+	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("NN2"):
+		KBA.append("836.800000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("NN2"):
+		KBA.append("836.800000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("CN3") and angleIDtypes[i][2] == ("HN3"):
+		KBA.append("317.984000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("CN3") and angleIDtypes[i][2] == ("CN3"):
+		KBA.append("711.280000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("NN2") and angleIDtypes[i][2] == ("CN2"):
+		KBA.append("753.120000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("NN2") and angleIDtypes[i][2] == ("CN8"):
+		KBA.append("585.760000")
+	if angleIDtypes[i][0] == ("CN2") and angleIDtypes[i][1] == ("OG3R60") and angleIDtypes[i][2] == ("CN2"):
+		KBA.append("UNKNOWN")
+	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("CN2"):
+		KBA.append("836.800000")
+	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("CN3"):
+		KBA.append("836.800000")
+	if angleIDtypes[i][0] == ("OG3R60") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("CN2"):
+		KBA.append("UNKNOWN")
+	if angleIDtypes[i][0] == ("OG3R60") and angleIDtypes[i][1] == ("CN2") and angleIDtypes[i][2] == ("CN3"):
+		KBA.append("UNKNOWN")
+	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("CN7"):
+		KBA.append("920.480000")
+	if angleIDtypes[i][0] == ("CN7") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("HN8"):
+		KBA.append("288.947040")
+	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("CN8"):
+		KBA.append("UNKNOWN")
+	if angleIDtypes[i][0] == ("HN8") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("HN8"):
+		KBA.append("288.947040")
+	if angleIDtypes[i][0] == ("CN8") and angleIDtypes[i][1] == ("CN7") and angleIDtypes[i][2] == ("HN7"):
+		KBA.append("288.696000")
+	if angleIDtypes[i][0] == ("HN7") and angleIDtypes[i][1] == ("CN7") and angleIDtypes[i][2] == ("HN7"):
+		KBA.append("334.720000")
+	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("HN8"):
+		KBA.append("279.742240")
 
 for i in range(len(angleidtypes)):
 	print(" ", 
@@ -444,7 +461,7 @@ for i in range(len(angleidtypes)):
 		str(angleIDtypes[i][2]).ljust(8), 
 		str("5").ljust(5),
 		str(anglevalues[i]).ljust(15), 
-		#str(KTHETA).ljust(8),
+		str(KBA[i]).ljust(8),
 		#str(UB0).ljust(8),
 		#str(KUB).ljust(8), 
 		file = f6)
