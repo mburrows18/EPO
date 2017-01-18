@@ -44,11 +44,13 @@ bondcoords = []
 		bondcoords[i][0] generates atom name with coordinates bondcoords[i][0][1]
 		bondcoords[i][1] generates [atom name, [coordinates]] of all bonded atoms'''
 bondcoordtype = []
-bondangletype = []
+#same as bondcoords[] with atom names replaced with atom types
 bondlengths = []
 #all bond lengths with permutative duplicates in the form [atom1, atom2, bond length]
 bondangle = []
 #bond angles in the form [[bonded atom, central atom, bonded atom], bond angle]
+bondangletype = []
+#same as bondangle[] with atom names replaced with atom types
 numberedangles = []
 #list of all angles in the form [angle number, [atom1, central atom, atom2]]
 angleidnumbers = []
@@ -61,6 +63,8 @@ angleidtypes = []
 #stored list of angles in the form [atom1 type-central atom type-atom2 type] with angle number 1 having index 0
 #extracted from connectivity.txt
 angleIDtypes = []
+#stored list of angles in the form [[atom1 type], [central atom type], [atom2 type]] with angle number 1 having index 0
+#xtracted from connectivity.txt
 anglevalues = []
 #stored list of angle values with angle number 1 having index 0
 #extracted from connectivity.txt
@@ -334,6 +338,7 @@ prints data to:
 	connectivity.txt (f5)
 '''
 f4 = open('connectivity.txt', 'r')
+#intermediate output file
 connectivityList = f4.read().splitlines()
 for line in connectivityList:
   if line.startswith("#"):
@@ -346,11 +351,13 @@ for line in connectivityList:
     angleidtypes.append(words4[2])    
 f4.close()
 f5 = open('connectivity.txt', 'w')
+#intermediate output file
 for line in connectivityList:
   if not line.startswith("#") and not line.startswith("2#"):
     print(line, file = f5)
 f5.close()
 f5 = open('connectivity.txt', 'a')
+#intermediate output file
 print ("angles", file = f5)
 for i in range (len(angleidnumbers)):
 	print (angleidnumbers[i], 
@@ -377,6 +384,7 @@ prints data to:
 EPO.prm (f6)
 '''
 f6 = open('EPO.prm', 'w')
+#.prm file for GROMACS simulations
 print ("\n[ bondtypes ]", file = f6)
 print(";", 
 	str("i").ljust(8),
