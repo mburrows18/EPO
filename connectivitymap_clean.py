@@ -70,8 +70,6 @@ uniquebondtypes = []
 #unique bond types in the form [atomtype1, atomtype2] index = bond number - 1
 uniquebondlengths = []
 #unique bond lengths without permutative duplicates in the form [atom1, atom2, bond length]
-bondtype = []
-#unique bonds in the form [atom1 type, atom2 type]. index = index from unique bond list
 Aindex = 0
 #Aindex is NOT an ordered list -- intermediate variable used in section 2
 anglenumber = 0
@@ -81,13 +79,13 @@ uniquebondlengthsnm = []
 KB = []
 #list of bond KB values for bond types
 KBA = []
+#list of angle KB values for angle types
 
 def printlist(List):
 #prints all items in list, output file = f3 (connectivity.txt)
 	for i in range (len(List)):
 		print (List[i], file = f3)
 	return
-
 
 def aindex(Aname):
 #extracts index from atom name
@@ -100,9 +98,6 @@ def aindex(Aname):
 	if Aname.startswith("O"):
 		Aindex = (int(Aname.strip("O")) - 1)
 	return Aindex
-
-
-
 
 def calcangle(bondangle, numberedangles, anglenumber, bondcoords, bondcoordtype, i, a, c):
 #calculates bond angles
@@ -132,7 +127,6 @@ def calcangle(bondangle, numberedangles, anglenumber, bondcoords, bondcoordtype,
 	bondangle[anglenumber - 1][1].append(str(angle))
 	return anglenumber
 
-
 '''
 extracts data from: 
 	itp file
@@ -144,6 +138,7 @@ generates:
 	bdist[]
 	uniquebdist[]
 	uniquebonds[]
+	uniquebondtypes[]
 	atype[]
 	aname[]
 	atomcoords[]
@@ -193,6 +188,7 @@ uses:
 	aindex(Aname)
 generates:
 	bondcoords[]
+	bondcoordtype[]
 	bondlengths[]
 	uniquebondlengths[]
 '''
@@ -218,9 +214,13 @@ for i in range(len(uniqueconnectivity)):
 '''
 uses:
 	calcangle(bondangle, numberedangles, anglenumber, bondcoords, i, a, c)
+	uniquebonds[]
 generates:
 	bondangle[]
 	numberedangles[]
+  bondangletype[]
+prints data to:
+	connectivity.txt (f3)
 '''
 for i in range(len(bondcoords)):
 	if len(bondcoords[i][1]) == 2:
@@ -307,6 +307,18 @@ for i in range(len(aname)):
 	print ('{} -- {}'.format(aname[i], atype[i]), file = f3)
 f3.close()
 
+
+'''
+extracts data from:
+	connectivity.txt (f4)
+generates:
+	angleidnumbers[]
+	angleidnames[]
+	angleidtypes[]
+	anglevalues[]
+prints data to:
+	connectivity.txt (f5)
+'''
 f4 = open('connectivity.txt', 'r')
 connectivityList = f4.read().splitlines()
 for line in connectivityList:
@@ -335,6 +347,22 @@ for i in range (len(angleidnumbers)):
 f5.close()
 
 
+'''
+uses:
+	uniquebondlengths[]
+	uniquebondtypes[]
+	uniquebonds[]
+	angleidtypes[]
+	anglevalues[]
+	
+generates:
+	uniquebondlengthsnm[]
+	angleIDtypes[]
+	KB[]
+	KBA[]
+prints data to:
+EPO.prm (f6)
+'''
 f6 = open('EPO.prm', 'w')
 print ("\n[ bondtypes ]", file = f6)
 print(";", 
@@ -347,10 +375,6 @@ print(";",
 for i in range(len(uniquebondlengths)):
 	lengthnm = float(uniquebondlengths[i][2])*0.1
 	uniquebondlengthsnm.append([lengthnm])
-typei = 0
-typej = 0
-kb = []
-
 for i in range(len(uniquebondtypes)):
 	if uniquebondtypes[i][0] == ("CN3") and uniquebondtypes[i][1] == ("CN3"):
 		KB.append("418400.00")
@@ -401,7 +425,6 @@ print(";",
 for i in range(len(angleidtypes)):
 	line = str(angleidtypes[i])
 	angleIDtypes.append(line.split("-"))
-
 for i in range(len(angleIDtypes)):
 	if angleIDtypes[i][0] == ("CN3") and angleIDtypes[i][1] == ("CN3") and angleIDtypes[i][2] == ("CN3"):
 		KBA.append("334.720000")
@@ -453,7 +476,6 @@ for i in range(len(angleIDtypes)):
 		KBA.append("334.720000")
 	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("HN8"):
 		KBA.append("279.742240")
-
 for i in range(len(angleidtypes)):
 	print(" ", 
 		str(angleIDtypes[i][0]).ljust(8), 
