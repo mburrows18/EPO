@@ -81,14 +81,16 @@ KB = []
 KBA = []
 #list of angle KB values for angle types
 
-def printlist(List):
+
 #prints all items in list, output file = f3 (connectivity.txt)
+def printlist(List):
 	for i in range (len(List)):
 		print (List[i], file = f3)
 	return
 
-def aindex(Aname):
+
 #extracts index from atom name
+def aindex(Aname):
 	if Aname.startswith("C"):
 		Aindex = (int(Aname.strip("C")) - 1)
 	if Aname.startswith("H"):
@@ -99,8 +101,9 @@ def aindex(Aname):
 		Aindex = (int(Aname.strip("O")) - 1)
 	return Aindex
 
-def calcangle(bondangle, numberedangles, anglenumber, bondcoords, bondcoordtype, i, a, c):
+
 #calculates bond angles
+def calcangle(bondangle, numberedangles, anglenumber, bondcoords, bondcoordtype, i, a, c):
 	atomA = np.array(bondcoords[i][1][a][1])
 	atomB = np.array(bondcoords[i][0][1])
 	atomC = np.array(bondcoords[i][1][c][1])
@@ -127,6 +130,7 @@ def calcangle(bondangle, numberedangles, anglenumber, bondcoords, bondcoordtype,
 	bondangle[anglenumber - 1][1].append(str(angle))
 	return anglenumber
 
+
 '''
 extracts data from: 
 	itp file
@@ -142,6 +146,8 @@ generates:
 	atype[]
 	aname[]
 	atomcoords[]
+	words2
+	words
 '''
 for line in itpList:
 	if line.startswith(' '):
@@ -186,6 +192,10 @@ for i in range(len(coordinates)):
 '''
 uses:
 	aindex(Aname)
+	uniqueconnectivity[]
+	Aname
+	Aindex
+	connectivity[]
 generates:
 	bondcoords[]
 	bondcoordtype[]
@@ -215,6 +225,7 @@ for i in range(len(uniqueconnectivity)):
 uses:
 	calcangle(bondangle, numberedangles, anglenumber, bondcoords, i, a, c)
 	uniquebonds[]
+	uniquebondlengths[]
 generates:
 	bondangle[]
 	numberedangles[]
@@ -316,6 +327,9 @@ generates:
 	angleidnames[]
 	angleidtypes[]
 	anglevalues[]
+	connectivityList
+	words3
+	words4
 prints data to:
 	connectivity.txt (f5)
 '''
@@ -354,7 +368,6 @@ uses:
 	uniquebonds[]
 	angleidtypes[]
 	anglevalues[]
-	
 generates:
 	uniquebondlengthsnm[]
 	angleIDtypes[]
