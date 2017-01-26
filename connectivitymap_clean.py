@@ -85,7 +85,20 @@ KB = []
 #list of bond KB values for bond types
 KBA = []
 #list of angle KB values for angle types
-
+bondtypelist = []
+#stores data extracted from raw .prm file
+uniquebtypelist = []
+#intermediate list in removing permutative bonds
+uniquebondtypelist = []
+#final list of unique bond types and averaged bond lengths, prints to final .prm file
+uniquebtype = []
+#intermediate list in removing permutative bonds
+btypelist = []
+#intermediate list in removing permutative bonds in the form bondtypenum, atom1typenum, atom2typenum
+avgblengths = []
+#intermediate list in removing permutative bonds
+blengths = []
+#intermediate list in removing permutative bonds
 
 #prints all items in list, output file = f3 (connectivity.txt)
 def printlist(List):
@@ -449,7 +462,7 @@ print(";",
 	str("func").ljust(5),
 	str("theta0").ljust(15),
 	str("ktheta").ljust(12),
-	str("ub0").ljust(8),
+	str("ub0").ljust(10),
 	str("kub").ljust(8), 
 	file = f6)
 for i in range(len(angleidtypes)):
@@ -514,37 +527,59 @@ for i in range(len(angleidtypes)):
 		str("5").ljust(5),
 		str(anglevalues[i]).ljust(15), 
 		str(KBA[i]).ljust(8),
-		#str(UB0).ljust(8),
-		#str(KUB).ljust(8), 
+		str(" -- ").ljust(8),
+		str(" -- ").ljust(8), 
 		file = f6)
 f6.close()
+
+
+
+#FROM HERE DOWN THE CODE WORKS, BUT IS QUITE MESSY. ALL CODE ABOVE THIS LINE HAS BEEN OPTIMIZED AND SIMPLIFIED AS MUCH AS POSSIBLE
+
 
 '''
 extracts data from:
 	EPO.prm (f7)
-prints data to:
-	EPO.prm (f8)
+generates:
+	bondtypelist = []
+	angletypelist = []
+	uniquebtypelist = []
+	uniquebondtypelist = []
+	uniquebtype = []
+	btypelist = []
+	avgblengths = []
+	blengths = []
 '''
-bondtypelist = []
 angletypelist = []
-uniquebtypelist = []
-uniquebondtypelist = []
-uniquebtype = []
-btypelist = []
-avgblengths = []
-blengths = []
+uniqueatypelist = []
+atypelist = []
+uniqueangletypelist = []
+avgatheta = []
+atheta = []
+uniqueatype = []
+
 f7 = open('EPO.prm', 'r')
 prmList = f7.read().splitlines()
 for line in prmList:
 	if line.startswith(" _ "):
-		angletypeList = line.split()
+		linea = line.split(" _ ", 1)[1]
+		angletypeList = linea.split()
+		for i in range(len(uniqueatypes)):
+			if angletypeList[0] == uniqueatypes[i]:
+				Type1num = i
+			if angletypeList[1] == uniqueatypes[i]:
+				Type2num = i
+			if angletypeList[2] == uniqueatypes[i]:
+				Type3num = i
 		angletypelist.append(
-			[[angletypeList[0]], [], 
-			[angletypeList[1]], [], 
-			[angletypeList[2]], [], 
-			[angletypeList[3]], 
-			[angletypeList[4]], 
-			[angletypeList[5]]])
+			[[], str(angletypeList[0]), Type1num, 
+			str(angletypeList[1]), Type2num, 
+			str(angletypeList[2]), Type3num, 
+			str(angletypeList[3]), 
+			str(angletypeList[4]), 
+			str(angletypeList[5]), 
+			str(angletypeList[6]), 
+			str(angletypeList[7]), []])
 	if line.startswith("  "):
 		bondtypeList = line.split()
 		for i in range(len(uniqueatypes)):
@@ -558,6 +593,53 @@ for line in prmList:
 			str(bondtypeList[2]), 
 			str(bondtypeList[3]), 
 			str(bondtypeList[4]), []])
+for i in range(len(angletypelist)):
+	atom1T = angletypelist[i][2]
+	atom2T = angletypelist[i][4]
+	atom3T = angletypelist[i][6]
+	angleT = ('{}-{}-{}'.format(atom1T, atom2T, atom3T))
+	if angleT not in uniqueatypelist:
+		uniqueatypelist.append(angleT)
+		atypelist.append([[], atom1T, atom2T, atom3T])
+for i in range(len(atypelist)):
+	atypelist[i][0] = str(i)
+	for j in range(len(atypelist)):
+		atheta.append([j, []])
+		avgatheta.append([])
+		if atypelist[i][1] == atypelist[j][3] and atypelist[i][3] == atypelist[j][1] and atypelist[i][2] == atypelist[j][2] and (i != j):
+			atypelist[i][0] = str('- {} {}'.format(j, i))
+			atypelist[j][0] = str('- {} {}'.format(j, i))
+for j in range(len(atypelist)):
+	for i in range(len(angletypelist)):
+		if not atypelist[j][0].startswith("-") and angletypelist[i][2] == atypelist[j][1] and angletypelist[i][4] == atypelist[j][2] and angletypelist[i][6] == atypelist[j][3]:
+			atheta[j][1].append(float(angletypelist[i][8]))
+			angletypelist[i][0] = str(j)
+		if atypelist[j][0].startswith("-") and angletypelist[i][2] == atypelist[j][1] and angletypelist[i][4] == atypelist[j][2] and angletypelist[i][6] == atypelist[j][3] or atypelist[j][0].startswith("-") and angletypelist[i][2] == atypelist[j][3] and angletypelist[i][4] == atypelist[j][2] and angletypelist[i][6] == atypelist[j][1]:
+			atheta[j][1].append(float(angletypelist[i][8]))
+			angletypelist[i][0] = str(j)
+	avgatheta[j] = average(atheta[j][1])
+for i in range(len(angletypelist)):
+	for j in range(len(avgatheta)):
+		if angletypelist[i][0] == str(j) and avgatheta[j] not in angletypelist[i][12]:
+			angletypelist[i][12] = avgatheta[j]
+for i in range(len(angletypelist)):
+	angletype = angletypelist[i][0]
+	if angletype not in uniqueatype:
+		uniqueatype.append(angletype)
+		uniqueangletypelist.append(
+			[str(angletypelist[i][0]), 
+			str(angletypelist[i][1]), 
+			str(angletypelist[i][2]), 
+			str(angletypelist[i][3]),
+			str(angletypelist[i][4]),
+			str(angletypelist[i][5]),
+			str(angletypelist[i][6]),
+			str(angletypelist[i][7]),
+			str(angletypelist[i][8]),
+			str(angletypelist[i][9]),
+			str(angletypelist[i][10]),
+			str(angletypelist[i][11]),
+			str(angletypelist[i][12])])
 for i in range(len(bondtypelist)):
 	atom1T = bondtypelist[i][2]
 	atom2T = bondtypelist[i][4]
@@ -600,10 +682,16 @@ for i in range(len(bondtypelist)):
 			str(bondtypelist[i][6]), 
 			str(bondtypelist[i][7]), 
 			str(bondtypelist[i][8])])
-
-
-
 f7.close()
+
+
+'''
+uses:
+	uniquebondtypelist[]
+	prmList[]
+prints data to:
+	EPO.prm (f8)
+'''
 f8 = open('EPO.prm', 'w')
 for i in range(0, 3):
 	print(prmList[i], file = f8)
@@ -617,3 +705,14 @@ for i in range(len(uniquebondtypelist)):
 		file = f8)
 for i in range(34, 39):
 	print(prmList[i], file = f8)
+for i in range(len(uniqueangletypelist)):
+	print(" ",
+		str(uniqueangletypelist[i][1]).ljust(8), 
+		str(uniqueangletypelist[i][3]).ljust(8), 
+		str(uniqueangletypelist[i][5]).ljust(8), 
+		str(uniqueangletypelist[i][7]).ljust(5),
+		str(uniqueangletypelist[i][12]).ljust(15), 
+		str(uniqueangletypelist[i][9]).ljust(12),
+		str(uniqueangletypelist[i][10]).ljust(10),
+		str(uniqueangletypelist[i][11]).ljust(8), 
+		file = f8)
