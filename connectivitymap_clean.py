@@ -1,5 +1,5 @@
 
-from numpy import sqrt, power, linalg
+from numpy import sqrt, power, linalg, average
 import numpy as np
 
 
@@ -14,7 +14,6 @@ f3 = open('connectivity.txt', 'w')
 atom number starts with 1
 atom index starts with 0, so atom number 1 has atom index 0
 '''
-
 itpList = f2.read().splitlines()
 #list of lines from itp input file, f2
 pdbList = f1.read().splitlines()
@@ -34,6 +33,8 @@ aname = []
 #atom names starting from C1 with index 0
 atype = []
 #atom type starting from atom type for C1 with index 0
+uniqueatypes = []
+#list of unique atom types in molecule
 bdist = []
 #bond lengths in the form [atom1, [bonded atoms], [bond lenghts]]
 uniquebdist = []
@@ -89,9 +90,13 @@ KBA = []
 #prints all items in list, output file = f3 (connectivity.txt)
 def printlist(List):
 	for i in range (len(List)):
-		print (List[i], file = f3)
+		print (List[i])
 	return
 
+#averages all values in list LIST, returns avg as average
+def average(LIST):
+	avg = np.average(LIST)
+	return avg
 
 #extracts index from atom name
 def aindex(Aname):
@@ -148,6 +153,7 @@ generates:
 	uniquebonds[]
 	uniquebondtypes[]
 	atype[]
+	uniqueatypes[]
 	aname[]
 	atomcoords[]
 	words2
@@ -157,6 +163,9 @@ for line in itpList:
 	if line.startswith(' '):
 		words2 = line.split()
 		atype.append(words2[1])
+for i in atype:
+	if i not in uniqueatypes:
+		uniqueatypes.append(i)		
 for line in pdbList:
 	if line.startswith("HETATM"):
 		words = line.split()
@@ -381,7 +390,7 @@ generates:
 	KB[]
 	KBA[]
 prints data to:
-EPO.prm (f6)
+	EPO.prm (f6)
 '''
 f6 = open('EPO.prm', 'w')
 #.prm file for GROMACS simulations
@@ -424,7 +433,7 @@ for i in range(len(uniquebondtypes)):
 	if uniquebondtypes[i][0] == ("CN7") and uniquebondtypes[i][1] == ("HN7"):
 		KB.append("258571.20")
 for i in range(len(uniquebonds)):
-	print(" ", 
+	print("  ", 
 		str(uniquebondtypes[i][0]).ljust(8), 
 		str(uniquebondtypes[i][1]).ljust(8), 
 		str("1").ljust(5), 
@@ -498,7 +507,7 @@ for i in range(len(angleIDtypes)):
 	if angleIDtypes[i][0] == ("NN2") and angleIDtypes[i][1] == ("CN8") and angleIDtypes[i][2] == ("HN8"):
 		KBA.append("279.742240")
 for i in range(len(angleidtypes)):
-	print(" ", 
+	print(" _", 
 		str(angleIDtypes[i][0]).ljust(8), 
 		str(angleIDtypes[i][1]).ljust(8), 
 		str(angleIDtypes[i][2]).ljust(8), 
@@ -508,7 +517,103 @@ for i in range(len(angleidtypes)):
 		#str(UB0).ljust(8),
 		#str(KUB).ljust(8), 
 		file = f6)
+f6.close()
+
+'''
+extracts data from:
+	EPO.prm (f7)
+prints data to:
+	EPO.prm (f8)
+'''
+bondtypelist = []
+angletypelist = []
+uniquebtypelist = []
+uniquebondtypelist = []
+uniquebtype = []
+btypelist = []
+avgblengths = []
+blengths = []
+f7 = open('EPO.prm', 'r')
+prmList = f7.read().splitlines()
+for line in prmList:
+	if line.startswith(" _ "):
+		angletypeList = line.split()
+		angletypelist.append(
+			[[angletypeList[0]], [], 
+			[angletypeList[1]], [], 
+			[angletypeList[2]], [], 
+			[angletypeList[3]], 
+			[angletypeList[4]], 
+			[angletypeList[5]]])
+	if line.startswith("  "):
+		bondtypeList = line.split()
+		for i in range(len(uniqueatypes)):
+			if bondtypeList[0] == uniqueatypes[i]:
+				Type1num = i
+			if bondtypeList[1] == uniqueatypes[i]:
+				Type2num = i
+		bondtypelist.append(
+			[[], str(bondtypeList[0]), Type1num, 
+			str(bondtypeList[1]), Type2num, 
+			str(bondtypeList[2]), 
+			str(bondtypeList[3]), 
+			str(bondtypeList[4]), []])
+for i in range(len(bondtypelist)):
+	atom1T = bondtypelist[i][2]
+	atom2T = bondtypelist[i][4]
+	bondT = ('{}-{}'.format(atom1T, atom2T))
+	if bondT not in uniquebtypelist:
+		uniquebtypelist.append(bondT)
+		btypelist.append([[], atom1T, atom2T])
+for i in range(len(btypelist)):
+	btypelist[i][0] = str(i)
+	for j in range(len(btypelist)):
+		blengths.append([j, []])
+		avgblengths.append([])
+		if btypelist[i][1] == btypelist[j][2] and btypelist[i][2] == btypelist[j][1] and (i != j):
+			btypelist[i][0] = str('- {} {}'.format(j, i))
+			btypelist[j][0] = str('- {} {}'.format(j, i))
+for j in range(len(btypelist)):
+	for i in range(len(bondtypelist)):
+		if not btypelist[j][0].startswith("-") and bondtypelist[i][2] == btypelist[j][1] and bondtypelist[i][4] == btypelist[j][2]:
+			blengths[j][1].append(float(bondtypelist[i][6]))
+			bondtypelist[i][0] = str(j)
+		if btypelist[j][0].startswith("-") and bondtypelist[i][2] == btypelist[j][1] and bondtypelist[i][4] == btypelist[j][2] or btypelist[j][0].startswith("-") and bondtypelist[i][2] == btypelist[j][2] and bondtypelist[i][4] == btypelist[j][1]:
+			blengths[j][1].append(float(bondtypelist[i][6]))
+			bondtypelist[i][0] = str(j)
+	avgblengths[j] = average(blengths[j][1])
+for i in range(len(bondtypelist)):
+	for j in range(len(avgblengths)):	
+		if bondtypelist[i][0] == str(j) and avgblengths[j] not in bondtypelist[i][8]:
+			bondtypelist[i][8] = avgblengths[j]
+for i in range(len(bondtypelist)):
+	bondtype = bondtypelist[i][0]
+	if bondtype not in uniquebtype:
+		uniquebtype.append(bondtype)
+		uniquebondtypelist.append(
+			[str(bondtypelist[i][0]), 
+			str(bondtypelist[i][1]), 
+			str(bondtypelist[i][2]),
+			str(bondtypelist[i][3]), 
+			str(bondtypelist[i][4]), 
+			str(bondtypelist[i][5]),
+			str(bondtypelist[i][6]), 
+			str(bondtypelist[i][7]), 
+			str(bondtypelist[i][8])])
 
 
 
-
+f7.close()
+f8 = open('EPO.prm', 'w')
+for i in range(0, 3):
+	print(prmList[i], file = f8)
+for i in range(len(uniquebondtypelist)):
+	print(" ", 
+		str(uniquebondtypelist[i][1]).ljust(8), 
+		str(uniquebondtypelist[i][3]).ljust(8), 
+		str(uniquebondtypelist[i][5]).ljust(5), 
+		str(uniquebondtypelist[i][8]).ljust(23), 
+		str(uniquebondtypelist[i][7]).ljust(12), 
+		file = f8)
+for i in range(34, 39):
+	print(prmList[i], file = f8)
