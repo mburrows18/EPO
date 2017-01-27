@@ -1,5 +1,5 @@
 
-from numpy import sqrt, power, linalg, average
+from numpy import sqrt, power, linalg, average, std
 import numpy as np
 
 
@@ -99,6 +99,15 @@ avgblengths = []
 #intermediate list in removing permutative bonds
 blengths = []
 #intermediate list in removing permutative bonds
+angletypelist = []
+uniqueatypelist = []
+atypelist = []
+uniqueangletypelist = []
+avgatheta = []
+atheta = []
+uniqueatype = []
+avgblengthstd = []
+avgathetastd = []
 
 #prints all items in list, output file = f3 (connectivity.txt)
 def printlist(List):
@@ -544,19 +553,21 @@ generates:
 	bondtypelist = []
 	angletypelist = []
 	uniquebtypelist = []
+	uniqueatypelist = []
 	uniquebondtypelist = []
+	uniqueangletypelist = []
 	uniquebtype = []
+	uniqueatype = []
 	btypelist = []
+	atypelist = []
 	avgblengths = []
+	avgatheta = []
 	blengths = []
+	atheta = []
+	avgblengthsstd = []
+	avgathetastd = []
 '''
-angletypelist = []
-uniqueatypelist = []
-atypelist = []
-uniqueangletypelist = []
-avgatheta = []
-atheta = []
-uniqueatype = []
+
 
 f7 = open('EPO.prm', 'r')
 prmList = f7.read().splitlines()
@@ -606,6 +617,7 @@ for i in range(len(atypelist)):
 	for j in range(len(atypelist)):
 		atheta.append([j, []])
 		avgatheta.append([])
+		avgathetastd.append([])
 		if atypelist[i][1] == atypelist[j][3] and atypelist[i][3] == atypelist[j][1] and atypelist[i][2] == atypelist[j][2] and (i != j):
 			atypelist[i][0] = str('- {} {}'.format(j, i))
 			atypelist[j][0] = str('- {} {}'.format(j, i))
@@ -618,6 +630,8 @@ for j in range(len(atypelist)):
 			atheta[j][1].append(float(angletypelist[i][8]))
 			angletypelist[i][0] = str(j)
 	avgatheta[j] = average(atheta[j][1])
+	avgathetastd[j] = np.std(np.array(atheta[j][1]))
+	print('angle type {} has standard deviation {}'.format(atypelist[j], avgathetastd[j]))
 for i in range(len(angletypelist)):
 	for j in range(len(avgatheta)):
 		if angletypelist[i][0] == str(j) and avgatheta[j] not in angletypelist[i][12]:
@@ -652,6 +666,7 @@ for i in range(len(btypelist)):
 	for j in range(len(btypelist)):
 		blengths.append([j, []])
 		avgblengths.append([])
+		avgblengthstd.append([])
 		if btypelist[i][1] == btypelist[j][2] and btypelist[i][2] == btypelist[j][1] and (i != j):
 			btypelist[i][0] = str('- {} {}'.format(j, i))
 			btypelist[j][0] = str('- {} {}'.format(j, i))
@@ -664,6 +679,8 @@ for j in range(len(btypelist)):
 			blengths[j][1].append(float(bondtypelist[i][6]))
 			bondtypelist[i][0] = str(j)
 	avgblengths[j] = average(blengths[j][1])
+	avgblengthstd[j] = np.std(np.array(blengths[j][1]))
+	print('bond type {} has standard deviation {}'.format(btypelist[j], avgblengthstd[j]))
 for i in range(len(bondtypelist)):
 	for j in range(len(avgblengths)):	
 		if bondtypelist[i][0] == str(j) and avgblengths[j] not in bondtypelist[i][8]:
