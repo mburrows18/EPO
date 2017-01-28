@@ -2,10 +2,11 @@
 from numpy import sqrt, power, linalg, average, std
 import numpy as np
 
-
-f1 = open('EPO_optimized.pdb', 'r')
+f1name = input("name of pdb file: ")
+f1 = open(f1name, 'r')
 #input file
-f2 = open('epo.itp', 'r')
+f2name = input ("name of itp file: ")
+f2 = open(f2name, 'r')
 #input file
 f3 = open('connectivity.txt', 'w')
 #intermediate output file
@@ -414,7 +415,8 @@ generates:
 prints data to:
 	EPO.prm (f6)
 '''
-f6 = open('EPO.prm', 'w')
+f6name = input ("name of prm file: ")
+f6 = open(f6name, 'w')
 #.prm file for GROMACS simulations
 print ("\n[ bondtypes ]", file = f6)
 print(";", 
@@ -569,7 +571,7 @@ generates:
 '''
 
 
-f7 = open('EPO.prm', 'r')
+f7 = open(f6name, 'r')
 prmList = f7.read().splitlines()
 for line in prmList:
 	if line.startswith(" _ "):
@@ -709,7 +711,7 @@ uses:
 prints data to:
 	EPO.prm (f8)
 '''
-f8 = open('EPO.prm', 'w')
+f8 = open(f6name, 'w')
 for i in range(0, 3):
 	print(prmList[i], file = f8)
 for i in range(len(uniquebondtypelist)):
