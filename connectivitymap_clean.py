@@ -568,10 +568,14 @@ generates:
 	atheta = []
 	avgblengthsstd = []
 	avgathetastd = []
+prints to:
+	stats.txt (f9)
 '''
 
 
 f7 = open(f6name, 'r')
+f9name = input ("Name of statistics output file: ")
+f9 = open(f9name, 'w')
 prmList = f7.read().splitlines()
 for line in prmList:
 	if line.startswith(" _ "):
@@ -633,7 +637,10 @@ for j in range(len(atypelist)):
 			angletypelist[i][0] = str(j)
 	avgatheta[j] = average(atheta[j][1])
 	avgathetastd[j] = np.std(np.array(atheta[j][1]))
-	print('angle type {} has standard deviation {}'.format(atypelist[j], avgathetastd[j]))
+	print('Angles of type {}-{}-{}:'.format(uniqueatypes[int(atypelist[j][1])], uniqueatypes[int(atypelist[j][2])], uniqueatypes[int(atypelist[j][3])]), file = f9)
+	for k in range(len(atheta[j][1])):
+		print(atheta[j][1][k], file = f9)
+	print('Average angle of type {}-{}-{} has standard deviation = {} \n'.format(uniqueatypes[int(atypelist[j][1])], uniqueatypes[int(atypelist[j][2])], uniqueatypes[int(atypelist[j][3])], avgathetastd[j]), file = f9)
 for i in range(len(angletypelist)):
 	for j in range(len(avgatheta)):
 		if angletypelist[i][0] == str(j) and avgatheta[j] not in angletypelist[i][12]:
@@ -682,7 +689,10 @@ for j in range(len(btypelist)):
 			bondtypelist[i][0] = str(j)
 	avgblengths[j] = average(blengths[j][1])
 	avgblengthstd[j] = np.std(np.array(blengths[j][1]))
-	print('bond type {} has standard deviation {}'.format(btypelist[j], avgblengthstd[j]))
+	print('Bonds of type {}-{}:'.format(uniqueatypes[int(btypelist[j][1])], uniqueatypes[int(btypelist[j][2])]), file = f9)
+	for k in range(len(blengths[j][1])):
+		print(blengths[j][1][k], file = f9)
+	print('Average bond of type {}-{} has standard deviation = {} \n'.format(uniqueatypes[int(btypelist[j][1])], uniqueatypes[int(btypelist[j][2])], avgblengthstd[j]), file = f9)
 for i in range(len(bondtypelist)):
 	for j in range(len(avgblengths)):	
 		if bondtypelist[i][0] == str(j) and avgblengths[j] not in bondtypelist[i][8]:
@@ -702,6 +712,7 @@ for i in range(len(bondtypelist)):
 			str(bondtypelist[i][7]), 
 			str(bondtypelist[i][8])])
 f7.close()
+f9.close()
 
 
 '''
